@@ -76,7 +76,6 @@ def create_app(test_config=None):
         current_questions = paginate_questions(request, selection)
 
         if len(current_questions) == 0:
-            print("len is", len(current_questions))
             abort(404)
 
         return jsonify(
@@ -123,7 +122,6 @@ def create_app(test_config=None):
                     Question.question.ilike("%{}%".format(search_term))
                 )
                 current_questions = paginate_questions(request, selection)
-                print(current_questions)
                 return jsonify(
                     {
                         "success": True,
@@ -147,34 +145,22 @@ def create_app(test_config=None):
             abort(422)
 
     
-
-    """
-    @TODO:
-    Create a GET endpoint to get questions based on category.
-
-    TEST: In the "List" tab / main screen, clicking on one of the
-    categories in the left column will cause only questions of that
-    category to be shown.
-    """
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_questions_by_category(category_id):
-        try:
-            questions = Question.query.filter(Question.category == category_id).order_by(Question.id).all()
-            current_questions = paginate_questions(request, questions)
+        questions = Question.query.filter(Question.category == category_id).order_by(Question.id).all()
+        current_questions = paginate_questions(request, questions)
 
-            if len(questions) == 0:
-                abort(404)
+        if len(questions) == 0:
+            abort(404)
+        return jsonify(
+            {
+                "success": True,
+                "questions": current_questions,
+                "totalQuestions": len(current_questions),
+                "currentCategory": category_id
+            }
+        )
 
-            return jsonify(
-                {
-                    "success": True,
-                    "questions": current_questions,
-                    "totalQuestions": len(current_questions),
-                    "currentCategory": category_id
-                }
-            )
-        except:
-            abort(400)
 
     """
     @TODO:
