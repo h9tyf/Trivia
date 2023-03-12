@@ -61,6 +61,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
     
+    @unittest.skip("question whose id is 2 has been deleted")
     def test_delete_question_200(self):
         res = self.client().delete("/questions/2")
         data = json.loads(res.data)
@@ -76,6 +77,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
+    
+    def test_post_question_search_200(self):
+        res = self.client().post("/questions", json={"searchTerm": "which"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["questions"])
+
+    @unittest.skip("test question has been created")
+    def test_post_question_create_200(self):
+        res = self.client().post("/questions", json={"question": "test question",
+                                                     "answer": "test answer",
+                                                     "difficulty": 5,
+                                                     "category": 5})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["created"])
     
 
 

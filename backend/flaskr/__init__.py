@@ -89,14 +89,6 @@ def create_app(test_config=None):
             }
         )
 
-
-    """
-    @TODO:
-    Create an endpoint to DELETE question using a question ID.
-
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page.
-    """
     @app.route("/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
         try:
@@ -116,31 +108,9 @@ def create_app(test_config=None):
             })
         
 
-    """
-    @TODO:
-    Create an endpoint to POST a new question,
-    which will require the question and answer text,
-    category, and difficulty score.
-
-    TEST: When you submit a question on the "Add" tab,
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.
-    """
-
-    """
-    @TODO:
-    Create a POST endpoint to get questions based on a search term.
-    It should return any questions for whom the search term
-    is a substring of the question.
-
-    TEST: Search by any phrase. The questions list will update to include
-    only question that include that string within their question.
-    Try using the word "title" to start.
-    """
     @app.route("/questions", methods=["POST"])
-    def create_question(question_id):
+    def create_question():
         body = request.get_json()
-
         new_question = body.get("question", None)
         new_answer = body.get("answer", None)
         new_difficulty = body.get("difficulty", None)
@@ -153,12 +123,12 @@ def create_app(test_config=None):
                     Question.question.ilike("%{}%".format(search_term))
                 )
                 current_questions = paginate_questions(request, selection)
-
+                print(current_questions)
                 return jsonify(
                     {
                         "success": True,
                         "questions": current_questions,
-                        "totalQuestions": len(selection.all()),
+                        "totalQuestions": len(current_questions), # ????
                         "currentCategory": "?"
                     }
                 )
