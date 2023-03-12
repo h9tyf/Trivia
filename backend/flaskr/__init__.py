@@ -71,7 +71,7 @@ def create_app(test_config=None):
                 "success": True,
                 "questions": current_questions,
                 "totalQuestions": len(Question.query.all()),
-                "currentCategory": 1, # ??????
+                "currentCategory": "", # ?
                 "categories": [category.format() for category in Category.query.all()]
             }
         )
@@ -114,8 +114,8 @@ def create_app(test_config=None):
                     {
                         "success": True,
                         "questions": current_questions,
-                        "totalQuestions": len(current_questions), # ????
-                        "currentCategory": "?"
+                        "totalQuestions": len(current_questions), 
+                        "currentCategory": "" # ?
                     }
                 )
             else:
