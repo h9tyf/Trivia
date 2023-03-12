@@ -157,7 +157,7 @@ def create_app(test_config=None):
         quiz_category = body.get("quiz_category", None)
 
         question = Question.query.filter(Question.category == quiz_category)\
-            .filter(Question.id.notin_(prev_questions)).order_by(func.random()).one_or_none()
+            .filter(Question.id.notin_(prev_questions)).order_by(func.random()).all()
 
         if question == None:
             abort(404)
@@ -165,7 +165,7 @@ def create_app(test_config=None):
         return jsonify(
             {
                 "success": True,
-                "question": question.format()
+                "question": question[0].format()
             }
         )
 

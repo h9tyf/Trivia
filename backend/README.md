@@ -90,6 +90,278 @@ You will need to provide detailed documentation of your API endpoints including 
 }
 ```
 
+### Documentation
+
+` GET '/categories'`
+
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+
+- Request Arguments: None
+
+- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs.
+
+  ```json
+  {
+      'categories': { '1' : "Science",
+      '2' : "Art",
+      '3' : "Geography",
+      '4' : "History",
+      '5' : "Entertainment",
+      '6' : "Sports" }
+  }
+  ```
+
+`GET '/questions?page=${integer}'`
+
+- Fetches a paginated set of questions, a total number of questions, all categories and current category string.
+
+- Request Arguments: `page` - integer
+
+- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+
+  ```json
+  {
+    "categories": [
+      {
+        "id": 1,
+        "type": "Science"
+      },
+      {
+        "id": 2,
+        "type": "Art"
+      },
+      {
+        "id": 3,
+        "type": "Geography"
+      },
+      {
+        "id": 4,
+        "type": "History"
+      },
+      {
+        "id": 5,
+        "type": "Entertainment"
+      },
+      {
+        "id": 6,
+        "type": "Sports"
+      }
+    ],
+    "currentCategory": "",
+    "questions": [
+      {
+        "answer": "Maya Angelou",
+        "category": 4,
+        "difficulty": 2,
+        "id": 5,
+        "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+      },
+      {
+        "answer": "Muhammad Ali",
+        "category": 4,
+        "difficulty": 1,
+        "id": 9,
+        "question": "What boxer's original name is Cassius Clay?"
+      },
+      {
+        "answer": "Apollo 13",
+        "category": 5,
+        "difficulty": 4,
+        "id": 2,
+        "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+      },
+      {
+        "answer": "Tom Cruise",
+        "category": 5,
+        "difficulty": 4,
+        "id": 4,
+        "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+      },
+      {
+        "answer": "Edward Scissorhands",
+        "category": 5,
+        "difficulty": 3,
+        "id": 6,
+        "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+      },
+      {
+        "answer": "Brazil",
+        "category": 6,
+        "difficulty": 3,
+        "id": 10,
+        "question": "Which is the only team to play in every soccer World Cup tournament?"
+      },
+      {
+        "answer": "Uruguay",
+        "category": 6,
+        "difficulty": 4,
+        "id": 11,
+        "question": "Which country won the first ever soccer World Cup in 1930?"
+      },
+      {
+        "answer": "George Washington Carver",
+        "category": 4,
+        "difficulty": 2,
+        "id": 12,
+        "question": "Who invented Peanut Butter?"
+      },
+      {
+        "answer": "Lake Victoria",
+        "category": 3,
+        "difficulty": 2,
+        "id": 13,
+        "question": "What is the largest lake in Africa?"
+      },
+      {
+        "answer": "The Palace of Versailles",
+        "category": 3,
+        "difficulty": 3,
+        "id": 14,
+        "question": "In which royal palace would you find the Hall of Mirrors?"
+      }
+    ],
+    "success": true,
+    "totalQuestions": 19
+  }
+  ```
+
+`DELETE '/questions/${question_id}'`
+
+- Deletes a specified question using the id of the question
+
+- Request Arguments: `id` - integer
+
+- Returns: Return the id of the question.
+
+  ```json
+  {
+    "deleted": 2,
+    "success": true
+  }
+  ```
+
+` POST '/questions'`
+
+- If parameter "seachTerm" is empty, create a new question.
+
+- Request Arguments
+
+  ```json
+  {
+      'question':  'Heres a new question string',
+      'answer':  'Heres a new answer string',
+      'difficulty': 1,
+      'category': 3
+  }
+  ```
+
+- Returns: Return the id of the new question.
+
+  ```json
+  {
+      "success": True,
+      "created": 24
+  }
+  ```
+
+`POST '/questions'`
+
+- If parameter "seachTerm" is not empty,  get questions based on a search term. 
+
+- Request Arguments
+
+  ```json
+  {
+  	'searchTerm': 'artist'
+  }
+  ```
+
+- Returns: Return any questions for whom the search term is a substring of the question.
+
+  ```json
+  {
+    "currentCategory": "",
+    "questions": [
+      {
+        "answer": "Escher",
+        "category": 2,
+        "difficulty": 1,
+        "id": 16,
+        "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+      },
+      {
+        "answer": "Jackson Pollock",
+        "category": 2,
+        "difficulty": 2,
+        "id": 19,
+        "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+      }
+    ],
+    "success": true,
+    "totalQuestions": 2
+  }
+  ```
+
+`GET '/categories/${category_id}/questions'`
+
+- Fetches questions for a cateogry specified by id request argument
+
+- Request Arguments: `id` - integer
+
+- Returns: An object with questions for the specified category, total questions, and current category string
+
+  ```json
+  {
+    "currentCategory": 5,
+    "questions": [
+      {
+        "answer": "Tom Cruise",
+        "category": 5,
+        "difficulty": 4,
+        "id": 4,
+        "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+      },
+      {
+        "answer": "Edward Scissorhands",
+        "category": 5,
+        "difficulty": 3,
+        "id": 6,
+        "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+      }
+    ],
+    "success": true,
+    "totalQuestions": 2
+  }
+  ```
+
+` POST '/quizzes'`
+
+- Send a post request in order to get the next question
+
+- Request Body:
+
+  ```json
+  {
+      'previous_questions': [5,9],
+      'quiz_category': 4
+  }
+  ```
+
+- Returns: a single new question object
+
+  ```json
+  {
+    "question": {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    "success": true
+  }
+  ```
+
 ## Testing
 
 Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
