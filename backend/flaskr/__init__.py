@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -49,8 +49,9 @@ def create_app(test_config=None):
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
         )
-        return response  
-   
+        return response
+
+
     """
     @TODO:
     Create an endpoint to handle GET requests
@@ -81,24 +82,23 @@ def create_app(test_config=None):
     """
     @app.route('/questions', methods=['GET'])
     def get_questions():
-        try:
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
+        selection = Question.query.all()
+        current_questions = paginate_questions(request, selection)
 
-            if len(current_questions) == 0:
-                abort(404)
+        if len(current_questions) == 0:
+            print("len is", len(current_questions))
+            abort(404)
 
-            return jsonify(
-                {
-                    "success": True,
-                    "questions": current_questions,
-                    "totalQuestions": len(Question.query.all()),
-                    "currentCategory": 1,
-                    "categories": Category.query.all()
-                }
-            )
-        except:
-            abort(400)
+        return jsonify(
+            {
+                "success": True,
+                "questions": current_questions,
+                "totalQuestions": len(Question.query.all()),
+                "currentCategory": 1,
+                "categories": [category.format() for category in Category.query.all()]
+            }
+        )
+
 
     """
     @TODO:
@@ -111,19 +111,20 @@ def create_app(test_config=None):
     def delete_question(question_id):
         try:
             question = Question.query.filter(Question.id == question_id).one_or_none()
-
-            if question is None:
-                abort(404)
-
-            question.delete()
-            db.session.commit()
-
-            return jsonify({
-                    "success": True,
-                    "deleted": question_id
-                })
         except:
             abort(422)
+
+        if question is None:
+            abort(404)
+
+        question.delete()
+        db.session.commit()
+
+        return jsonify({
+                "success": True,
+                "deleted": question_id
+            })
+        
 
     """
     @TODO:
@@ -255,17 +256,12 @@ def create_app(test_config=None):
     """
     @app.errorhandler(404)
     def not_found(error):
-        return (
-            jsonify({"success": False, "error": 404, "message": "resource not found"}),
-            404,
-        )
+        return jsonify({"success": False, "error": 404, "message": "resource not found"}), 404
+        
 
     @app.errorhandler(422)
     def unprocessable(error):
-        return (
-            jsonify({"success": False, "error": 422, "message": "unprocessable"}),
-            422,
-        )
+        return jsonify({"success": False, "error": 422, "message": "unprocessable"}), 422
 
     @app.errorhandler(400)
     def bad_request(error):

@@ -33,7 +33,7 @@ class TriviaTestCase(unittest.TestCase):
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
-    def test_get_categories_ok(self):
+    def test_get_categories_200(self):
         res = self.client().get("/categories")
         data = json.loads(res.data)
 
@@ -42,8 +42,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["total_categories"])
         self.assertTrue(len(data["categories"]))
 
-    def test_get_questions(self):
-        res = self.client().get("/categories/1/questions?page=1")
+    def test_get_questions_200(self):
+        res = self.client().get("/questions?page=1")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -54,7 +54,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["categories"])
 
     def test_404_sent_requesting_beyond_valid_page(self):
-        res = self.client().get("/categories/1/questions?page=1")
+        res = self.client().get("/questions?page=1000")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
