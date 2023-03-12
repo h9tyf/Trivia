@@ -34,13 +34,8 @@ def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
 
-    """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    """
     CORS(app)
-    """
-    @TODO: Use the after_request decorator to set Access-Control-Allow
-    """
+    
     @app.after_request
     def after_request(response):
         response.headers.add(
@@ -52,11 +47,6 @@ def create_app(test_config=None):
         return response
 
 
-    """
-    @TODO:
-    Create an endpoint to handle GET requests
-    for all available categories.
-    """
     @app.route('/categories', methods=['GET'])
     def get_categories():
         categories = Category.query.all()
@@ -94,7 +84,7 @@ def create_app(test_config=None):
                 "success": True,
                 "questions": current_questions,
                 "totalQuestions": len(Question.query.all()),
-                "currentCategory": 1,
+                "currentCategory": 1, # ??????
                 "categories": [category.format() for category in Category.query.all()]
             }
         )
@@ -112,7 +102,7 @@ def create_app(test_config=None):
         try:
             question = Question.query.filter(Question.id == question_id).one_or_none()
         except:
-            abort(422)
+            abort(400)
 
         if question is None:
             abort(404)
