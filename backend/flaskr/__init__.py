@@ -179,27 +179,22 @@ def create_app(test_config=None):
 
         prev_questions = body.get("previous_questions", None)
         quiz_category = body.get("quiz_category", None)
-        try:
-            question = Question.query.filter(Question.category == quiz_category)\
-                .filter(Question.id.notin_(prev_questions)).order_by(func.random()).one_or_none()
 
-            if question == None:
-                abort(404)
+        question = Question.query.filter(Question.category == quiz_category)\
+            .filter(Question.id.notin_(prev_questions)).order_by(func.random()).one_or_none()
 
-            return jsonify(
-                {
-                    "success": True,
-                    "question": question
-                }
-            )
-        except:
-            abort(400)
+        if question == None:
+            abort(404)
 
-    """
-    @TODO:
-    Create error handlers for all expected errors
-    including 404 and 422.
-    """
+        return jsonify(
+            {
+                "success": True,
+                "question": question.format()
+            }
+        )
+
+
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({"success": False, "error": 404, "message": "resource not found"}), 404
