@@ -103,13 +103,14 @@ def create_app(test_config=None):
         new_difficulty = body.get("difficulty", None)
         new_category = body.get("category", None)
         search_term = body.get("searchTerm", None)
-
+        search = (new_question is None) and (new_answer is None) and (new_difficulty is None) and (new_category is None)
         try:
-            if search_term:
+            if search:
                 selection = Question.query.order_by(Question.id).filter(
                     Question.question.ilike("%{}%".format(search_term))
                 )
                 current_questions = paginate_questions(request, selection)
+                
                 return jsonify(
                     {
                         "success": True,
@@ -155,10 +156,11 @@ def create_app(test_config=None):
 
         prev_questions = body.get("previous_questions", None)
         quiz_category = body.get("quiz_category", None)
-
-        question = Question.query.filter(Question.category == quiz_category)\
-            .filter(Question.id.notin_(prev_questions)).order_by(func.random()).all()
-
+        if quiz_category['id'] == 0:
+            question = Question.query.filter(Question.id.notin_(prev_questions)).order_by(func.random()).all()
+        else:
+            question = Question.query.filter(Question.category == quiz_category['id'])\
+                .filter(Question.id.notin_(prev_questions)).order_by(func.random()).all()
         if len(question) == 0:
             abort(404)
 
